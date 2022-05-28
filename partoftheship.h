@@ -12,9 +12,11 @@ class PartOfTheShip
 {
 public:
     PartOfTheShip(const QPoint& coord, Ship* ship,bool hit = false, bool head = false);
-    PartOfTheShip(qreal x, qreal y, Ship* ship, bool hit = false, bool head = false);
+    PartOfTheShip(int x, int y, Ship* ship, bool hit = false, bool head = false);
+    PartOfTheShip();
     ~PartOfTheShip();
 
+    //setters & getters
     const QPoint& get_coordinate()const;
     Ship* get_ship() const;
     bool is_hit() const;
@@ -22,8 +24,8 @@ public:
 
     void set_point(const QPoint& point);
     void set_ship(Ship* ship);
-    void set_hit() const;
-    void set_head() const;
+    void set_hit();
+    void set_head();
 
 
     //отрисовка ячейки
