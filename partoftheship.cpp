@@ -85,6 +85,7 @@ void PartOfTheShip::draw(QPainter *painter, const QVector<PartOfTheShip *>& exis
     painter->drawLine(C,D);
     painter->drawLine(D,A);
 
+    painter->fillRect(A.x()+1,A.y()+1,cell_size-0.5,cell_size-0.5,QBrush(Qt::green));
     if(this->is_hit())
     {
         painter->drawLine(A,C);

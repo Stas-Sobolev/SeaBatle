@@ -5,6 +5,7 @@
 #include<QImage>
 #include<QPainter>
 #include <QPaintEvent>
+#include <QGraphicsView>
 #include <field.h>
 
 QT_BEGIN_NAMESPACE
@@ -12,21 +13,19 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 
-class MainWindow : public QMainWindow
+class MainWindow : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent* event);
-    void mousePressEvent(QMouseEvent* event);
+    MainWindow(QGraphicsScene* scene);
+    ~MainWindow() override ;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 private:
-    Ui::MainWindow *ui;
     QImage background;
     Field* field_1;
-
+    Field* field_2;
 };
 #endif // MAINWINDOW_H

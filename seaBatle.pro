@@ -23,7 +23,6 @@ SOURCES += \
     ship.cpp
 
 HEADERS += \
-    MyTypes.h \
     field.h \
     mainwindow.h \
     partoftheship.h \

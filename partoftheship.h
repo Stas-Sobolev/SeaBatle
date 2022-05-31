@@ -8,10 +8,11 @@
 #include <QPoint>
 
 class Ship;
+
 class PartOfTheShip
 {
 public:
-    PartOfTheShip(const QPoint& coord, Ship* ship,bool hit = false, bool head = false);
+    PartOfTheShip(const QPoint& coord, Ship* Ship,bool hit = false, bool head = false);
     PartOfTheShip(int x, int y, Ship* ship, bool hit = false, bool head = false);
     PartOfTheShip();
     ~PartOfTheShip();

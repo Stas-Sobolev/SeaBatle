@@ -3,16 +3,18 @@
 #include "partoftheship.h"
 #include <QVector>
 class Field;
-class ship
+
+class Ship
 {
 public:
-    ship(Field* field,unsigned int number_part,const QVector<PartOfTheShip*>& parts={});
-    ship(Field* field = nullptr);
-    ~ship();
     enum orientation
     {
        HORIZONTAL,VERTICAL
-    } orientation=orientation::HORIZONTAL;
+    };
+    Ship(Field* field,unsigned int number_part,const QVector<PartOfTheShip*>& parts={},orientation orient = HORIZONTAL);
+    Ship(Field* field = nullptr);
+    ~Ship();
+
 
     //setters
     void set_number_of_part(unsigned int num);
@@ -24,12 +26,12 @@ public:
     //getters
 
     Field *get_field()const;
-    const QPoint& get_coordinate_head()const;
-    const QVector<PartOfTheShip*>& get_parts() const;
+    const QPoint &get_coordinate_head()const;
+    const QVector<PartOfTheShip *> &get_parts() const;
     unsigned int get_num_part()const;
-
+    orientation get_orientation()const;
     //Рисование корабля
-    void draw_ship();
+    void draw_ship(QPainter* painter);
 
     //Проверка на возможность постановки корабля
     bool ship_dont_put();
@@ -46,7 +48,7 @@ private:
     bool alive;
     //Поле,которому принадлежит корабль
     Field* field;
-
+    orientation orient;
 
 };
 

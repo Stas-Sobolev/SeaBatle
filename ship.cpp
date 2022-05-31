@@ -1,49 +1,88 @@
 #include "ship.h"
+#include <QDebug>
+#include <field.h>
+//конструкторы
 
-
-
-ship::ship(Field *field, unsigned int number_part, const QVector<PartOfTheShip *> &parts): field(field),number_of_part(number_part),parts(parts)
+Ship::Ship(Field *field, unsigned int number_part, const QVector<PartOfTheShip *> &parts, Ship::orientation orient):
+    field(field),number_of_part(number_part),parts(parts),orient(orient)
 {
     alive=true;
     dont_put=false;
 }
 
-ship::ship(Field *field):ship(field,0,{})
+Ship::Ship(Field *field):Ship(field,0,{})
 {
 
 }
 
-ship::~ship()
+Ship::~Ship()
 {
 
 }
-
-void ship::set_number_of_part(unsigned int num)
+//устанавливает количество палуб
+void Ship::set_number_of_part(unsigned int num)
 {
     number_of_part=num;
 }
-
-void ship::set_parts(const QVector<PartOfTheShip *> &parts)
+//устанавливает палубы
+void Ship::set_parts(const QVector<PartOfTheShip *> &parts)
 {
     this->parts=parts;
 }
-
-void ship::add_part(PartOfTheShip *part)
+//добавляет палубу к кораблю
+void Ship::add_part(PartOfTheShip *part)
 {
     this->parts.push_back(part);
 }
 
-void ship::set_field(Field *field)
+void Ship::dead_ship()
+{
+
+}
+//устанавливает поле, которому принадлежит корабль
+void Ship::set_field(Field *field)
 {
     this->field=field;
 }
-
-Field *ship::get_field() const
+//возвращает поле
+Field *Ship::get_field() const
 {
     return field;
 }
 
-void ship::set_change_put(bool state)
+const QPoint &Ship::get_coordinate_head() const
+{
+
+}
+
+const QVector<PartOfTheShip *> &Ship::get_parts() const
+{
+    return parts;
+}
+
+unsigned int Ship::get_num_part() const
+{
+    return number_of_part;
+}
+
+Ship::orientation Ship::get_orientation() const
+{
+    return orient;
+}
+
+void Ship::draw_ship(QPainter* painter)
+{
+    for(auto part : parts)
+        part->draw(painter,{},30);
+}
+
+bool Ship::ship_dont_put()
+{
+
+}
+
+//меняет состояние возможности постановки корабля
+void Ship::set_change_put(bool state)
 {
     this->dont_put=state;
 }
