@@ -28,7 +28,7 @@ public:
     Field *get_field()const;
     const QPoint &get_coordinate_head()const;
     const QVector<PartOfTheShip *> &get_parts() const;
-    unsigned int get_num_part()const;
+    int get_num_part()const;
     orientation get_orientation()const;
     //Рисование корабля
     void draw_ship(QPainter* painter);
@@ -36,18 +36,21 @@ public:
     //Проверка на возможность постановки корабля
     bool ship_dont_put();
 
+    void change_orient(orientation _orient);
 
+    void turnt_ship();
 private:
     //количесвто палуб у корабля
-    unsigned int number_of_part;
+    int number_of_part;
     //Можно ли поставить корабль
-    bool dont_put;
+    bool state_put;
     //Палубы корабля отдельно
     QVector<PartOfTheShip*> parts;
     //жив ли корабль
     bool alive;
     //Поле,которому принадлежит корабль
     Field* field;
+    //ориентация корабля
     orientation orient;
 
 };

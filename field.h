@@ -39,6 +39,11 @@ public:
 
     void set_captured_part(PartOfTheShip* part);
 
+    void add_part(PartOfTheShip* part);
+
+    const QVector<PartOfTheShip*>& get_all_parts() const;
+
+
 
 private:
     //корабли, принадлежащие этому полю
@@ -55,6 +60,8 @@ private:
     Ship* captured_ship;
     //схваченная часть корабля
     PartOfTheShip* captured_part;
+    //все кусочки кораблей
+    QVector<PartOfTheShip*> all_parts;
 
 public:
     QRectF boundingRect() const;

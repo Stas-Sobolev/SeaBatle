@@ -7,7 +7,7 @@ Ship::Ship(Field *field, unsigned int number_part, const QVector<PartOfTheShip *
     field(field),number_of_part(number_part),parts(parts),orient(orient)
 {
     alive=true;
-    dont_put=false;
+    state_put=false;
 }
 
 Ship::Ship(Field *field):Ship(field,0,{})
@@ -60,7 +60,7 @@ const QVector<PartOfTheShip *> &Ship::get_parts() const
     return parts;
 }
 
-unsigned int Ship::get_num_part() const
+int Ship::get_num_part() const
 {
     return number_of_part;
 }
@@ -73,7 +73,7 @@ Ship::orientation Ship::get_orientation() const
 void Ship::draw_ship(QPainter* painter)
 {
     for(auto part : parts)
-        part->draw(painter,{},30);
+        part->draw(painter,field->get_all_parts(),30);
 }
 
 bool Ship::ship_dont_put()
@@ -81,9 +81,38 @@ bool Ship::ship_dont_put()
 
 }
 
+void Ship::change_orient(Ship::orientation _orient)
+{
+    orient=_orient;
+}
+
+void Ship::turnt_ship()
+{
+    int i=0;
+    if(orient==HORIZONTAL)
+    {
+        orient=VERTICAL;
+
+        for(auto part:parts)
+        {
+            part->set_point(part->get_coordinate() + QPoint(-i,i));
+            i++;
+        }
+    }
+    else
+    {
+        orient=HORIZONTAL;
+        for(auto part:parts)
+        {
+            part->set_point(part->get_coordinate() + QPoint(i,-i));
+            i++;
+        }
+    }
+}
+
 //меняет состояние возможности постановки корабля
 void Ship::set_change_put(bool state)
 {
-    this->dont_put=state;
+    this->state_put=state;
 }
 

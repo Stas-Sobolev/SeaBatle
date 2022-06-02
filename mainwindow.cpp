@@ -32,31 +32,51 @@ MainWindow::~MainWindow()
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button()==Qt::LeftButton)
-    {
     QPoint point = field_2->toGameFieldSpace(event->pos());
     point-={12,0};
-    bool shvatil= false;
-    for(auto ship : field_2->get_ships())
+    if(event->button()==Qt::LeftButton)
     {
-        for(auto part : ship->get_parts())
+        bool shvatil= false;
+        for(auto ship : field_2->get_ships())
         {
-
-            if(part->get_coordinate()==point)
+            for(auto part : ship->get_parts())
             {
-                shvatil=true;
-                field_2->set_captured_ship(ship);
-                field_2->set_captured_part(part);
-                break;
+
+                if(part->get_coordinate()==point)
+                {
+                    shvatil=true;
+                    field_2->set_captured_ship(ship);
+                    field_2->set_captured_part(part);
+                    break;
+                }
             }
+            if(shvatil)
+                break;
         }
-        if(shvatil)
-            break;
-    }
     }
     else
-        qDebug()<<"hehe";
+    {
+        if(!(field_2->get_captured_ship()))
+        {
+            for(auto ship : field_2->get_ships())
+            {
+                for(auto part : ship->get_parts())
+                {
 
+                    if(part->get_coordinate()==point)
+                    {
+                        //field_2->turning_the_ship(ship);
+                        ship->turnt_ship();
+                        break;
+                    }
+                }
+
+            }
+        }
+
+    }
+    field_1->update();
+    field_2->update();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)

@@ -1,6 +1,6 @@
 #include "partoftheship.h"
-
-
+#include <QDebug>
+#include "ship.h"
 
 PartOfTheShip::PartOfTheShip(const QPoint &coord, Ship *ship, bool hit, bool head):coordinate(coord),ship(ship),hit(hit),head(head)
 {
@@ -64,7 +64,7 @@ void PartOfTheShip::set_ship(Ship *ship)
 }
 
 //Рисует ячейку
-void PartOfTheShip::draw(QPainter *painter, const QVector<PartOfTheShip *>& existing_parts, qreal cell_size)
+void PartOfTheShip::draw(QPainter *painter, const QVector<PartOfTheShip*>& existing_parts, qreal cell_size)
 {
     /* Координаты вершин ячейки
      * A-лев верхн
@@ -85,11 +85,43 @@ void PartOfTheShip::draw(QPainter *painter, const QVector<PartOfTheShip *>& exis
     painter->drawLine(C,D);
     painter->drawLine(D,A);
 
-    painter->fillRect(A.x()+1,A.y()+1,cell_size-0.5,cell_size-0.5,QBrush(Qt::green));
+
+    qDebug()<<existing_parts.size();
+    if(is_lonely(existing_parts,this))
+    {
+        painter->fillRect(A.x()+1,A.y()+1,cell_size-0.5,cell_size-0.5,QBrush(Qt::green));
+        get_ship()->set_change_put(true);
+    }
+    else
+    {
+        painter->fillRect(A.x()+1,A.y()+1,cell_size-0.5,cell_size-0.5,QBrush(Qt::red));
+        get_ship()->set_change_put(false);
+    }
+
     if(this->is_hit())
     {
         painter->drawLine(A,C);
         painter->drawLine(B,D);
     }
 
+
+}
+
+bool PartOfTheShip::is_lonely(const QVector<PartOfTheShip *> &all_parts, PartOfTheShip* part_to_check)
+{
+    QVector<QPoint> delta {{0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{1,-1},{-1,1}};
+
+    for(auto part: all_parts)
+    {
+        for(auto d:delta)
+        {
+            if((QPoint(part_to_check->get_coordinate().x()+d.x(),part_to_check->get_coordinate().y()+d.y())==part->get_coordinate()
+            && part_to_check->get_ship()!=part->get_ship()))
+                return false;
+
+            if(part_to_check->get_coordinate().x()<0 ||part_to_check->get_coordinate().x()>10)
+                return false;
+        }
+    }
+    return true;
 }

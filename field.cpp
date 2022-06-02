@@ -46,12 +46,12 @@ void Field::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 }
 
-void Field::add_ship(const QPoint& pos, int num_parts, Ship::orientation)
+void Field::add_ship(const QPoint& pos, int num_parts, Ship::orientation orient)
 {
     Ship* _ship = new Ship();
     _ship->set_field(this);
-    _ship->set_number_of_part(3);
-
+    _ship->set_number_of_part(num_parts);
+    _ship->change_orient(orient);
     for(int i=0;i<num_parts;i++)
     {
         PartOfTheShip* part = new PartOfTheShip();
@@ -61,7 +61,7 @@ void Field::add_ship(const QPoint& pos, int num_parts, Ship::orientation)
         if(!i)
             part->set_head();
         _ship->add_part(part);
-
+        add_part(part);
     }
     ships.push_back(_ship);
 
@@ -122,6 +122,16 @@ void Field::set_captured_ship(Ship *ship)
 void Field::set_captured_part(PartOfTheShip *part)
 {
     captured_part=part;
+}
+
+void Field::add_part(PartOfTheShip *part)
+{
+    all_parts.push_back(part);
+}
+
+const QVector<PartOfTheShip*> &Field::get_all_parts() const
+{
+    return all_parts;
 }
 
 QRectF Field::boundingRect() const

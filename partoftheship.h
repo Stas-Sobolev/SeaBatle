@@ -32,7 +32,7 @@ public:
     //отрисовка ячейки
     void draw(QPainter* painter, const QVector<PartOfTheShip*>& existing_parts, qreal cell_size);
 
-
+    bool is_lonely(const QVector<PartOfTheShip*>& all_parts, PartOfTheShip* part);
 private:
 
     //координаты
