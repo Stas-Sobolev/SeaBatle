@@ -4,11 +4,14 @@
 #include <QRectF>
 #include <QtMath>
 #include <QDebug>
+#include "mainwindow.h"
 
 Field::Field(qreal cell_size, const QPoint &field_size, Field::state_field state, MainWindow *parent):QGraphicsItem(),
     cell_size(cell_size),field_size(field_size),state(state),parent(parent)
 {
     captured_ship = nullptr;
+
+
     //this->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 }
 
@@ -37,11 +40,20 @@ void Field::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                 painter->drawRect(static_cast<int>(i*cell_size),static_cast<int>(j*cell_size),cell_size,cell_size);
         }
     }
+    //рисуем корабли, если состояние подготовки
 
-    //рисуем корабли
     for(auto ship: ships)
     {
         ship->draw_ship(painter);
+    }
+
+    //рисуем промахи
+    for(auto miss:misses)
+    {
+        painter->setBrush(Qt::blue);
+        painter->drawEllipse((miss.x()+1)*cell_size+(cell_size-2*cell_size/3),
+                             (miss.y()+1)*cell_size+(cell_size-2*cell_size/3),cell_size/3,cell_size/3);
+
     }
 
 }
@@ -80,11 +92,11 @@ void Field::initial_ships()
     add_ship({4,17},1);
     add_ship({6,17},1);
 }
-
+//перевод координат сцены на координаты поля
 QPoint Field::toGameFieldSpace(const QPointF &sceneSpacePoint) {
     return {
-        qFloor(sceneSpacePoint.x() / cell_size) - 1,
-        qFloor(sceneSpacePoint.y() / cell_size) - 2
+        qFloor(sceneSpacePoint.x() / cell_size -0.3) - 1,
+        qFloor(sceneSpacePoint.y() / cell_size-0.3) - 2
     };
 }
 
@@ -132,6 +144,56 @@ void Field::add_part(PartOfTheShip *part)
 const QVector<PartOfTheShip*> &Field::get_all_parts() const
 {
     return all_parts;
+}
+
+bool Field::all_ships_standing() const
+{
+    for(auto ship: ships)
+        if(!ship->get_state_put())
+            return false;
+    return true;
+}
+
+void Field::set_state(Field::state_field _state)
+{
+    state=_state;
+}
+
+Field::state_field Field::get_state() const
+{
+    return state;
+}
+
+bool Field::shot(const QPoint &point)
+{
+    for(auto part : all_parts)
+        if(part->get_coordinate()==point)
+        {
+            part->set_hit();
+            if(!part->get_ship()->is_alive())
+                ship_dead(part->get_ship());
+            return true;
+        }
+    add_miss(point);
+
+}
+//добавляет промахи
+void Field::add_miss(const QPoint &point)
+{
+    misses.push_back(point);
+}
+//Обрабатывает смерть корабля(отрисовывет промахи вокруг него
+void Field::ship_dead(Ship *ship)
+{
+    QVector<QPoint> delta{{1,1},{0,1},{-1,1},{1,0},{-1,0},{1,-1},{-1,-1},{0,-1}};
+
+    for(auto part : ship->get_parts())
+        {
+            for(auto d : delta)
+            {
+                add_miss(part->get_coordinate()+d);
+            }
+        }
 }
 
 QRectF Field::boundingRect() const

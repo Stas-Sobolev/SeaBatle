@@ -4,6 +4,7 @@
 #include<QGraphicsItem>
 #include <QImage>
 #include <QMouseEvent>
+#include <QGraphicsEllipseItem>
 #include "ship.h"
 
 class MainWindow;
@@ -43,8 +44,15 @@ public:
 
     const QVector<PartOfTheShip*>& get_all_parts() const;
 
+    bool all_ships_standing() const;
 
+    void set_state(state_field _state);
 
+    state_field get_state() const;
+
+    bool shot(const QPoint& point);
+
+    void add_miss(const QPoint& point);
 private:
     //корабли, принадлежащие этому полю
     QVector<Ship*> ships;
@@ -62,7 +70,10 @@ private:
     PartOfTheShip* captured_part;
     //все кусочки кораблей
     QVector<PartOfTheShip*> all_parts;
+    //промахи по полю
+    QVector<QPoint> misses;
 
+    void ship_dead(Ship* ship);
 public:
     QRectF boundingRect() const;
 };

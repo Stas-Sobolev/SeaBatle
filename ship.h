@@ -30,6 +30,7 @@ public:
     const QVector<PartOfTheShip *> &get_parts() const;
     int get_num_part()const;
     orientation get_orientation()const;
+    bool get_state_put()const;
     //Рисование корабля
     void draw_ship(QPainter* painter);
 
@@ -39,6 +40,8 @@ public:
     void change_orient(orientation _orient);
 
     void turnt_ship();
+
+    bool is_alive()const;
 private:
     //количесвто палуб у корабля
     int number_of_part;
@@ -52,6 +55,8 @@ private:
     Field* field;
     //ориентация корабля
     orientation orient;
+
+
 
 };
 

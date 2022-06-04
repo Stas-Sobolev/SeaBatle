@@ -77,16 +77,11 @@ void PartOfTheShip::draw(QPainter *painter, const QVector<PartOfTheShip*>& exist
     QPoint C(static_cast<int>((coordinate.x()+2)*cell_size),static_cast<int>((coordinate.y()+2)*cell_size));
     QPoint D(static_cast<int>((coordinate.x()+1)*cell_size),static_cast<int>((coordinate.y()+2)*cell_size));
 
-    //СДЕЛАТЬ ПРОВЕРКУ НА КОРАБЛИ РЯДОМ
-    //
-    //
     painter->drawLine(A,B);
     painter->drawLine(B,C);
     painter->drawLine(C,D);
     painter->drawLine(D,A);
 
-
-    qDebug()<<existing_parts.size();
     if(is_lonely(existing_parts,this))
     {
         painter->fillRect(A.x()+1,A.y()+1,cell_size-0.5,cell_size-0.5,QBrush(Qt::green));
@@ -119,7 +114,8 @@ bool PartOfTheShip::is_lonely(const QVector<PartOfTheShip *> &all_parts, PartOfT
             && part_to_check->get_ship()!=part->get_ship()))
                 return false;
 
-            if(part_to_check->get_coordinate().x()<0 ||part_to_check->get_coordinate().x()>10)
+            if(part_to_check->get_coordinate().x()<0 || part_to_check->get_coordinate().x()>=10 ||
+                    part_to_check->get_coordinate().y()>=10 || part_to_check->get_coordinate().y()<0)
                 return false;
         }
     }

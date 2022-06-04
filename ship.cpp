@@ -70,10 +70,20 @@ Ship::orientation Ship::get_orientation() const
     return orient;
 }
 
+bool Ship::get_state_put() const
+{
+    return state_put;
+}
+
 void Ship::draw_ship(QPainter* painter)
 {
-    for(auto part : parts)
-        part->draw(painter,field->get_all_parts(),30);
+    if(field->get_state()==Field::PLACEMENT)
+        for(auto part : parts)
+            part->draw(painter,field->get_all_parts(),30);
+    else
+        for(auto part : parts)
+            if(part->is_hit())
+                part->draw(painter,field->get_all_parts(),30);
 }
 
 bool Ship::ship_dont_put()
@@ -108,6 +118,18 @@ void Ship::turnt_ship()
             i++;
         }
     }
+}
+
+bool Ship::is_alive() const
+{
+    int num_wounded=0;
+    for(auto part:parts)
+        if(part->is_hit())
+            num_wounded++;
+
+    if(num_wounded==number_of_part)
+        return false;
+    return true;
 }
 
 //меняет состояние возможности постановки корабля
