@@ -130,7 +130,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                 {
                     for(auto part : ship->get_parts())
                     {
-
                         if(part->get_coordinate()==point)
                         {
                             //field_2->turning_the_ship(ship);
@@ -220,14 +219,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     field_1->set_captured_ship(nullptr);
     field_1->set_captured_part(nullptr);
-
+    field_2->set_captured_ship(nullptr);
+    field_2->set_captured_part(nullptr);
 }
 
 void MainWindow::finished_placement()
 {
     if(field_1->get_state()==Field::PLACEMENT)
     {
-        if(!field_1->all_ships_standing())
+        if(field_1->all_ships_standing())
         {
             field_1->set_state(Field::ACTIVE);
             this->scene()->removeItem(field_1);
@@ -237,11 +237,10 @@ void MainWindow::finished_placement()
             player->setText("Player 2");
 
         }
-
     }
     else if(field_2->get_state()==Field::PLACEMENT)
     {
-        if(!field_2->all_ships_standing())
+        if(field_2->all_ships_standing())
         {
             field_2->set_state(Field::NOTACTIVE);
             field_2->setPos(360,30);

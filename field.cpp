@@ -33,11 +33,11 @@ void Field::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         for(int j=0;j<field_size.y()+1;j++)
         {
             if(!i && j)
-                painter->drawText(QRectF(i*cell_size,j*cell_size,cell_size,cell_size),static_cast<QString>(column_name[j-1]),QTextOption(Qt::AlignCenter));
+                painter->drawText(QRectF(j*cell_size,i*cell_size,cell_size,cell_size),static_cast<QString>(column_name[j-1]),QTextOption(Qt::AlignCenter));
             else if(i && !j)
-                painter->drawText(QRectF(i*cell_size,j*cell_size,cell_size,cell_size),QString::number(i),QTextOption(Qt::AlignCenter));
+                painter->drawText(QRectF(j*cell_size,i*cell_size,cell_size,cell_size),QString::number(i),QTextOption(Qt::AlignCenter));
             else if(i && j)
-                painter->drawRect(static_cast<int>(i*cell_size),static_cast<int>(j*cell_size),cell_size,cell_size);
+                painter->drawRect(static_cast<int>(j*cell_size),static_cast<int>(i*cell_size),cell_size,cell_size);
         }
     }
     //рисуем корабли, если состояние подготовки
@@ -185,15 +185,46 @@ void Field::add_miss(const QPoint &point)
 //Обрабатывает смерть корабля(отрисовывет промахи вокруг него
 void Field::ship_dead(Ship *ship)
 {
-    QVector<QPoint> delta{{1,1},{0,1},{-1,1},{1,0},{-1,0},{1,-1},{-1,-1},{0,-1}};
 
-    for(auto part : ship->get_parts())
-        {
-            for(auto d : delta)
+    if(ship->get_orientation()==Ship::VERTICAL)
+    {
+        QVector<QPoint> delta{{1,1},{-1,1},{1,0},{-1,0},{1,-1},{-1,-1}};
+
+        for(auto part : ship->get_parts())
             {
-                add_miss(part->get_coordinate()+d);
+                for(auto d : delta)
+                {
+                    if((part->get_coordinate()+d).x()>=0 && (part->get_coordinate()+d).x()<=9
+                            && (part->get_coordinate()+d).y()>=0 && (part->get_coordinate()+d).y()<=9)
+                    add_miss(part->get_coordinate()+d);
+                }
             }
-        }
+        if(ship->get_parts()[0]->get_coordinate().y()>0)
+            add_miss(ship->get_parts()[0]->get_coordinate()+QPoint(0,-1));
+
+        if(ship->get_parts()[ship->get_num_part()-1]->get_coordinate().y()<9)
+            add_miss(ship->get_parts()[ship->get_num_part()-1]->get_coordinate()+QPoint(0,1));
+    }
+    else
+    {
+        QVector<QPoint> delta{{1,1},{-1,1},{1,-1},{-1,-1},{0,1},{0,-1}};
+
+        for(auto part : ship->get_parts())
+            {
+                for(auto d : delta)
+                {
+                    if((part->get_coordinate()+d).x()>=0 && (part->get_coordinate()+d).x()<=9
+                            && (part->get_coordinate()+d).y()>=0 && (part->get_coordinate()+d).y()<=9)
+                    add_miss(part->get_coordinate()+d);
+                }
+            }
+
+        if(ship->get_parts()[0]->get_coordinate().x()>0)
+            add_miss(ship->get_parts()[0]->get_coordinate()+QPoint(-1,0));
+
+        if(ship->get_parts()[ship->get_num_part()-1]->get_coordinate().x()<9)
+            add_miss(ship->get_parts()[ship->get_num_part()-1]->get_coordinate()+QPoint(1,0));
+    }
 }
 
 QRectF Field::boundingRect() const
