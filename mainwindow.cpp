@@ -41,7 +41,9 @@ MainWindow::MainWindow(QGraphicsScene* scene)
 
 MainWindow::~MainWindow()
 {
-
+    delete field_1;
+    delete field_2;
+    delete player;
 
 }
 
@@ -144,36 +146,43 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         }
     }
     //выстрелы!!!!PIU PIU
-    else
-    {
+
         //стреляет первый игрок
-        if(field_1->get_state()==Field::ACTIVE)
+        else if(field_1->get_state()==Field::ACTIVE && field_2->get_state()!=Field::GAME_OVER)
         {
             point = field_2->toGameFieldSpace(event->pos());
             point-={12,0};
             if(point.x()>=0 && point.x()<=9 && point.y()>=0 && point.y()<=9)
                 if(!field_2->shot(point))
                 {
+
                     field_1->set_state(Field::NOTACTIVE);
                     field_2->set_state(Field::ACTIVE);
                     player->setText("Ходит второй игрок");
                 }
         }
-        else
+        else if(field_2->get_state()==Field::ACTIVE && field_1->get_state()!=Field::GAME_OVER)
         {
             //стреляет второй игрок
             point = field_1->toGameFieldSpace(event->pos());
             if(point.x()>=0 && point.x()<=9 && point.y()>=0 && point.y()<=9)
                 if(!field_1->shot(point))
                 {
-                    field_1->set_state(Field::ACTIVE);
-                    field_2->set_state(Field::NOTACTIVE);
-                    player->setText("Ходит первый игрок");
+                     field_1->set_state(Field::ACTIVE);
+                     field_2->set_state(Field::NOTACTIVE);
+                     player->setText("Ходит первый игрок");
+
                 }
         }
 
+    if(field_1->get_state()==Field::GAME_OVER)
+    {
+        player->setText("Игрок 2 выиграл!");
     }
-
+    if(field_2->get_state()==Field::GAME_OVER)
+    {
+        player->setText("Игрок 1 выиграл!");
+    }
 
     //обнова полей и сцены
     field_1->update();
@@ -253,7 +262,6 @@ void MainWindow::finished_placement()
             scene()->update();
             update();
 
-            //delete player;
             delete ready;
         }
     }

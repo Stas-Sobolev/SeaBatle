@@ -17,7 +17,8 @@ Ship::Ship(Field *field):Ship(field,0,{})
 
 Ship::~Ship()
 {
-
+    for(auto part:parts)
+        delete part;
 }
 //устанавливает количество палуб
 void Ship::set_number_of_part(unsigned int num)

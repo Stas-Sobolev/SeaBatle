@@ -14,7 +14,7 @@ class Field : public QGraphicsItem
 public:
     enum state_field
     {
-        PLACEMENT,ACTIVE,NOTACTIVE
+        PLACEMENT,ACTIVE,NOTACTIVE,GAME_OVER
     };
 
     Field(qreal cell_size,const QPoint& field_size,state_field state,MainWindow* parent);
@@ -53,6 +53,10 @@ public:
     bool shot(const QPoint& point);
 
     void add_miss(const QPoint& point);
+
+    bool game_over()const;
+
+    void ship_dead(Ship* ship);
 private:
     //корабли, принадлежащие этому полю
     QVector<Ship*> ships;
@@ -73,7 +77,7 @@ private:
     //промахи по полю
     QVector<QPoint> misses;
 
-    void ship_dead(Ship* ship);
+
 public:
     QRectF boundingRect() const;
 };

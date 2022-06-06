@@ -17,7 +17,11 @@ Field::Field(qreal cell_size, const QPoint &field_size, Field::state_field state
 
 Field::~Field()
 {
-
+    delete parent;
+    delete captured_ship;
+    delete captured_part;
+    for(auto ship:ships)
+        delete ship;
 }
 
 void Field::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -172,15 +176,27 @@ bool Field::shot(const QPoint &point)
             part->set_hit();
             if(!part->get_ship()->is_alive())
                 ship_dead(part->get_ship());
+            if(game_over())
+            {
+                state=Field::GAME_OVER;
+            }
             return true;
         }
     add_miss(point);
-
+    return false;
 }
 //добавляет промахи
 void Field::add_miss(const QPoint &point)
 {
     misses.push_back(point);
+}
+
+bool Field::game_over() const
+{
+    for(auto ship:ships)
+        if(ship->is_alive())
+            return false;
+    return true;
 }
 //Обрабатывает смерть корабля(отрисовывет промахи вокруг него
 void Field::ship_dead(Ship *ship)
